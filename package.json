@@ -1,0 +1,11 @@
+{
+  "name": "forecast-unfurl",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/askovdal/forecast-unfurl.git"
+  },
+  "license": "ISC",
+  "author": "askovdal",
+  "main": "app.js",
+}
