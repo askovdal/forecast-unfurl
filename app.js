@@ -11,6 +11,9 @@ app.post('/', (req, res) => {
   const { body } = req;
 
   console.log(body);
+  if (body.event && body.event.links) {
+    console.log(body.event.links);
+  }
 
   if (body.type === 'url_verification' && body.token === VERIFICATION_TOKEN) {
     return res.json({ challenge: body.challenge });
