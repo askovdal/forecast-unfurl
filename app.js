@@ -13,6 +13,8 @@ app.post('/', (req, res) => {
   if (body.type === 'url_verification' && body.token === VERIFICATION_TOKEN) {
     res.json({ challenge: body.challenge });
   }
+
+  res.status(400).send('Bad Request');
 });
 
 app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
