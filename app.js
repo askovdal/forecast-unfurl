@@ -13,7 +13,7 @@ app.post('/', (req, res) => {
   console.log(body);
 
   if (body.type === 'url_verification' && body.token === VERIFICATION_TOKEN) {
-    res.json({ challenge: body.challenge });
+    return res.json({ challenge: body.challenge });
   }
 
   res.status(400).send('Bad Request');
