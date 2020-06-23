@@ -4,7 +4,7 @@ import enforce from 'express-sslify';
 import { IN_PROD, PORT, VERIFICATION_TOKEN } from './config.js';
 
 const app = express();
-IN_PROD && app.use(enforce.HTTPS());
+IN_PROD && app.use(enforce.HTTPS({ trustProtoHeader: true }));
 app.use(express.json());
 
 app.post('/', (req, res) => {
