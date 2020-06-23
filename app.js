@@ -29,13 +29,16 @@ app.post('/', (req, res) => {
   const { event } = body;
 
   const unfurls = event.links.reduce((unfurls, { url }) => {
+    const id = url.match(/\/(T\d+)$/);
+    if (!id) return unfurls;
+
     unfurls[url] = {
       blocks: [
         {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `<${url}|Test>`,
+            text: `<${url}|${id[1]}: Task name>`,
           },
         },
       ],
