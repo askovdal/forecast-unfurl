@@ -10,13 +10,14 @@
   "type": "module",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "nodemon app.js"
   },
   "dependencies": {
     "express": "^4.17.1",
     "express-sslify": "^1.2.0"
   },
   "devDependencies": {
+    "nodemon": "^2.0.4",
     "prettier": "^2.0.5"
   },
   "engines": {
