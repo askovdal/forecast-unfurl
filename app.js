@@ -1,6 +1,6 @@
+import axios from 'axios';
 import express from 'express';
 import enforce from 'express-sslify';
-import axios from 'axios';
 
 import { IN_PROD, OAUTH_TOKEN, PORT, VERIFICATION_TOKEN } from './config.js';
 
@@ -20,11 +20,6 @@ app.post('/', (req, res) => {
   }
 
   res.status(200).end();
-
-  console.log(body);
-  if (body.event && body.event.links) {
-    console.log(body.event.links);
-  }
 
   const { event } = body;
 
@@ -56,7 +51,9 @@ app.post('/', (req, res) => {
       ts: event.message_ts,
       unfurls: unfurls,
     },
-  }).then(({ data }) => console.log(data));
+  })
+    .then(({ data }) => console.log(data))
+    .catch(console.error);
 });
 
 app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
