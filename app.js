@@ -10,6 +10,8 @@ app.use(express.json());
 app.post('/', (req, res) => {
   const { body } = req;
 
+  console.log(body);
+
   if (body.type === 'url_verification' && body.token === VERIFICATION_TOKEN) {
     res.json({ challenge: body.challenge });
   }
