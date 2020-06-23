@@ -15,7 +15,7 @@ app.post('/', (req, res) => {
     return res.status(400).send('Bad Request');
   }
 
-  if (body.type === 'url_verification' && body.token === VERIFICATION_TOKEN) {
+  if (body.type === 'url_verification') {
     return res.json({ challenge: body.challenge });
   }
 
@@ -28,6 +28,22 @@ app.post('/', (req, res) => {
 
   const { event } = body;
 
+  const unfurls = event.links.reduce((unfurls, { url }) => {
+    unfurls[url] = {
+      blocks: [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `<${url}|Test>`,
+          },
+        },
+      ],
+    };
+
+    return unfurls;
+  }, {});
+
   axios({
     url: 'https://slack.com/api/chat.unfurl',
     method: 'post',
@@ -35,19 +51,7 @@ app.post('/', (req, res) => {
     data: {
       channel: event.channel,
       ts: event.message_ts,
-      unfurls: {
-        [event.links[0].url]: {
-          blocks: [
-            {
-              type: 'section',
-              text: {
-                type: 'mrkdwn',
-                text: `<${event.links[0].url}|Test>`,
-              },
-            },
-          ],
-        },
-      },
+      unfurls: unfurls,
     },
   }).then(({ data }) => console.log(data));
 });
