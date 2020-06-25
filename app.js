@@ -26,9 +26,9 @@ const getTask = async (id) => {
   return response.data;
 };
 
-const createUnfurls = async (event) => {
+const createUnfurls = async ({ links }) => {
   const unfurls = {};
-  for (const { url } of event.links) {
+  for (const { url } of links) {
     const id = url.match(/\/T(\d+)$/);
     if (!id) continue;
 
@@ -51,35 +51,35 @@ const createUnfurls = async (event) => {
   return unfurls;
 };
 
-const unfurlMessage = (event, unfurls) => {
+const unfurlMessage = ({ channel, message_ts: ts }, unfurls) =>
   axios({
     url: 'https://slack.com/api/chat.unfurl',
     method: 'post',
     headers: { Authorization: `Bearer ${OAUTH_TOKEN}` },
     data: {
-      channel: event.channel,
-      ts: event.message_ts,
-      unfurls: unfurls,
+      channel,
+      ts,
+      unfurls,
     },
   })
     .then(({ data }) => console.log(data))
     .catch(console.error);
-};
 
 app.post('/', async (req, res) => {
-  const { body } = req;
+  const {
+    body: { challenge, event, token, type },
+  } = req;
 
-  if (body.token !== VERIFICATION_TOKEN) {
+  if (token !== VERIFICATION_TOKEN) {
     return res.status(400).send('Bad Request');
   }
 
-  if (body.type === 'url_verification') {
-    return res.json({ challenge: body.challenge });
+  if (type === 'url_verification') {
+    return res.json({ challenge });
   }
 
   res.status(200).end();
 
-  const { event } = body;
   const unfurls = await createUnfurls(event);
   unfurlMessage(event, unfurls);
 });
