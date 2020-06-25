@@ -1,4 +1,8 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 export const {
+  FORECAST_API_KEY,
   NODE_ENV = 'development',
   OAUTH_TOKEN,
   PORT = 3001,
