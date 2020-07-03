@@ -61,9 +61,7 @@ const unfurlMessage = ({ channel, message_ts: ts }, unfurls) =>
       ts,
       unfurls,
     },
-  })
-    .then(({ data }) => console.log(data))
-    .catch(console.error);
+  }).catch(console.error);
 
 app.post('/', async (req, res) => {
   const {
