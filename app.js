@@ -30,13 +30,27 @@ const getWorkflowColumn = async ({
   project_id: projectId,
   workflow_column: workflowColumn,
 }) => {
-  const { data } = await axios({
+  const {
+    data: { name },
+  } = await axios({
     url: `https://api.forecast.it/api/v1/projects/${projectId}/workflow_columns/${workflowColumn}`,
     method: 'get',
     headers: { 'X-FORECAST-API-KEY': FORECAST_API_KEY },
   }).catch(console.error);
 
-  return data;
+  return name;
+};
+
+const getRole = async ({ role }) => {
+  const {
+    data: { name },
+  } = await axios({
+    url: `https://api.forecast.it/api/v1/roles/${role}`,
+    method: 'get',
+    headers: { 'X-FORECAST-API-KEY': FORECAST_API_KEY },
+  }).catch(console.error);
+
+  return name;
 };
 
 const createUnfurls = async ({ links }) => {
@@ -48,7 +62,8 @@ const createUnfurls = async ({ links }) => {
     const task = await getTask(id[1]);
     if (!task) continue;
 
-    const { name: status } = await getWorkflowColumn(task);
+    const status = await getWorkflowColumn(task);
+    const role = task.role ? await getRole(task) : 'None';
 
     unfurls[url] = {
       color: '#6e0fea',
@@ -65,7 +80,7 @@ const createUnfurls = async ({ links }) => {
           elements: [
             {
               type: 'mrkdwn',
-              text: `Status: *${status}*`,
+              text: `Status: *${status}*\t\tRole: *${role}*`,
             },
           ],
         },
