@@ -98,7 +98,7 @@ const createUnfurls = async ({ links }) => {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `<${url}|*T${id[1]}: ${task.title}*>`,
+            text: `<${url}|T${id[1]} *${task.title}*>`,
           },
         },
         {
