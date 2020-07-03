@@ -26,6 +26,19 @@ const getTask = async (id) => {
   return response.data;
 };
 
+const getWorkflowColumn = async ({
+  project_id: projectId,
+  workflow_column: workflowColumn,
+}) => {
+  const { data } = await axios({
+    url: `https://api.forecast.it/api/v1/projects/${projectId}/workflow_columns/${workflowColumn}`,
+    method: 'get',
+    headers: { 'X-FORECAST-API-KEY': FORECAST_API_KEY },
+  }).catch(console.error);
+
+  return data;
+};
+
 const createUnfurls = async ({ links }) => {
   const unfurls = {};
   for (const { url } of links) {
@@ -34,6 +47,8 @@ const createUnfurls = async ({ links }) => {
 
     const task = await getTask(id[1]);
     if (!task) continue;
+
+    const { name: status } = await getWorkflowColumn(task);
 
     unfurls[url] = {
       color: '#6e0fea',
@@ -44,6 +59,15 @@ const createUnfurls = async ({ links }) => {
             type: 'mrkdwn',
             text: `<${url}|*T${id[1]}: ${task.title}*>`,
           },
+        },
+        {
+          type: 'context',
+          elements: [
+            {
+              type: 'mrkdwn',
+              text: `Status: *${status}*`,
+            },
+          ],
         },
       ],
     };
