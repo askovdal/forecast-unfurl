@@ -36,6 +36,7 @@ const createUnfurls = async ({ links }) => {
     if (!task) continue;
 
     unfurls[url] = {
+      color: '#6e0fea',
       blocks: [
         {
           type: 'section',
