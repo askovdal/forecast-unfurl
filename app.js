@@ -74,11 +74,11 @@ const createUnfurls = async ({ links }) => {
     const task = await getTask(id[1]);
     if (!task) continue;
 
-    const status = await getWorkflowColumn(task);
-    const role = task.role ? await getRole(task) : 'None';
-    const assignee = task.assigned_persons.length
-      ? await getAssignee(task)
-      : 'Unassigned';
+    const [status, role, assignee] = await Promise.all([
+      getWorkflowColumn(task),
+      task.role ? getRole(task) : 'None',
+      task.assigned_persons.length ? getAssignee(task) : 'Unassigned',
+    ]);
 
     unfurls[url] = {
       color: '#6e0fea',
