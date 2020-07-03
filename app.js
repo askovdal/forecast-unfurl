@@ -53,6 +53,18 @@ const getRole = async ({ role }) => {
   return name;
 };
 
+const getAssignee = async ({ assigned_persons: assignedPersons }) => {
+  const {
+    data: { first_name: firstName, last_name: lastName },
+  } = await axios({
+    url: `https://api.forecast.it/api/v1/persons/${assignedPersons[0]}`,
+    method: 'get',
+    headers: { 'X-FORECAST-API-KEY': FORECAST_API_KEY },
+  }).catch(console.error);
+
+  return `${firstName} ${lastName}`;
+};
+
 const createUnfurls = async ({ links }) => {
   const unfurls = {};
   for (const { url } of links) {
@@ -64,6 +76,9 @@ const createUnfurls = async ({ links }) => {
 
     const status = await getWorkflowColumn(task);
     const role = task.role ? await getRole(task) : 'None';
+    const assignee = task.assigned_persons.length
+      ? await getAssignee(task)
+      : 'Unassigned';
 
     unfurls[url] = {
       color: '#6e0fea',
@@ -80,7 +95,7 @@ const createUnfurls = async ({ links }) => {
           elements: [
             {
               type: 'mrkdwn',
-              text: `Status: *${status}*\t\tRole: *${role}*`,
+              text: `Status: *${status}*\t\tRole: *${role}*\t\tAssignee: *${assignee}*`,
             },
           ],
         },
