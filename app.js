@@ -19,7 +19,7 @@ const getTask = async (id) => {
     url: `https://api.forecast.it/api/v2/tasks/company_task_id/${id}`,
     method: 'get',
     headers: { 'X-FORECAST-API-KEY': FORECAST_API_KEY },
-  }).catch((_reason) => {});
+  }).catch(console.error);
 
   if (!response) return;
 
