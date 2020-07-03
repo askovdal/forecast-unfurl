@@ -74,11 +74,22 @@ const createUnfurls = async ({ links }) => {
     const task = await getTask(id[1]);
     if (!task) continue;
 
+    const assigneesLength = task.assigned_persons.length;
+
     const [status, role, assignee] = await Promise.all([
       getWorkflowColumn(task),
       task.role ? getRole(task) : 'None',
-      task.assigned_persons.length ? getAssignee(task) : 'Unassigned',
+      assigneesLength ? getAssignee(task) : 'Unassigned',
     ]);
+
+    let assigneeText;
+    if (assigneesLength === 2) {
+      assigneeText = `Assignees: *${assignee} + 1 other*`;
+    } else if (assigneesLength > 2) {
+      assigneeText = `Assignees: *${assignee} + ${assigneesLength - 1} others*`;
+    } else {
+      assigneeText = `Assignee: *${assignee}*`;
+    }
 
     unfurls[url] = {
       color: '#6e0fea',
@@ -95,7 +106,7 @@ const createUnfurls = async ({ links }) => {
           elements: [
             {
               type: 'mrkdwn',
-              text: `Status: *${status}*\t\tRole: *${role}*\t\tAssignee: *${assignee}*`,
+              text: `Status: *${status}*\t\tRole: *${role}*\t\t${assigneeText}`,
             },
           ],
         },
