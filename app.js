@@ -36,7 +36,7 @@ const getWorkflowColumn = async ({
     headers: { 'X-FORECAST-API-KEY': FORECAST_API_KEY },
   }).catch(console.error);
 
-  return name;
+  return name || 'No status';
 };
 
 const getRole = async ({ role }) => {
