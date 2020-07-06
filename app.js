@@ -21,9 +21,7 @@ const getTask = async (id) => {
     headers: { 'X-FORECAST-API-KEY': FORECAST_API_KEY },
   }).catch(console.error);
 
-  if (!response) return;
-
-  return response.data;
+  return response && response.data;
 };
 
 const getWorkflowColumn = async ({
