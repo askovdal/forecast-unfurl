@@ -81,12 +81,12 @@ const createUnfurls = async ({ links }) => {
     ]);
 
     let assigneeText;
-    if (assigneesLength === 2) {
-      assigneeText = `Assignees: *${assignee} + 1 other*`;
-    } else if (assigneesLength > 2) {
-      assigneeText = `Assignees: *${assignee} + ${assigneesLength - 1} others*`;
-    } else {
+    if (assigneesLength === 1) {
       assigneeText = `Assignee: *${assignee}*`;
+    } else if (assigneesLength === 2) {
+      assigneeText = `Assignees: *${assignee} + 1 other*`;
+    } else {
+      assigneeText = `Assignees: *${assignee} + ${assigneesLength - 1} others*`;
     }
 
     unfurls[url] = {
