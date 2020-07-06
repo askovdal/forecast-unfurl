@@ -133,14 +133,14 @@ app.post('/', async (req, res) => {
   } = req;
 
   if (token !== VERIFICATION_TOKEN) {
-    return res.status(400).send('Bad Request');
+    return res.sendStatus(400);
   }
 
   if (type === 'url_verification') {
     return res.json({ challenge });
   }
 
-  res.status(200).end();
+  res.sendStatus(200);
 
   const unfurls = await createUnfurls(event);
   unfurlMessage(event, unfurls);
