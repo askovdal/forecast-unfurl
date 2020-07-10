@@ -57,7 +57,7 @@ const getMainAssignee = async ({ assigned_persons: assignedPersons, role }) => {
 
   let firstName, lastName, defaultRole;
   if (people.length === 1 || role === null) {
-    // If there is only one assignee or no role on the task, just use that
+    // If there is only one assignee or no role on the task, just use the first
     // assignee's name.
     ({
       data: { first_name: firstName, last_name: lastName },
