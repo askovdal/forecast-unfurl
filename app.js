@@ -48,12 +48,37 @@ const getRole = async ({ role }) => {
   return name;
 };
 
-const getAssignee = async ({ assigned_persons: assignedPersons }) => {
-  const {
-    data: { first_name: firstName, last_name: lastName },
-  } = await forecast
-    .get(`/v1/persons/${assignedPersons[0]}`)
-    .catch(console.error);
+const getMainAssignee = async ({ assigned_persons: assignedPersons, role }) => {
+  const people = await Promise.all(
+    assignedPersons.map((assignedPerson) =>
+      forecast.get(`/v1/persons/${assignedPerson}`).catch(console.error)
+    )
+  );
+
+  let firstName, lastName, defaultRole;
+  if (people.length === 1 || role === null) {
+    // If there is only one assignee or no role on the task, just use that
+    // assignee's name.
+    ({
+      data: { first_name: firstName, last_name: lastName },
+    } = people[0]);
+  } else {
+    // If there are more than one assignee, go through each one, and if their
+    // default role is the same as the role on the task then use that assignee's
+    // name. If none of the default roles match then use the last assignee's
+    // name.
+    for ({
+      data: {
+        default_role: defaultRole,
+        first_name: firstName,
+        last_name: lastName,
+      },
+    } of people) {
+      if (defaultRole === role) {
+        break;
+      }
+    }
+  }
 
   return `${firstName} ${lastName}`;
 };
@@ -72,7 +97,7 @@ const createUnfurls = async ({ links }) => {
     const [status, role, assignee] = await Promise.all([
       getWorkflowColumn(task),
       task.role ? getRole(task) : 'None',
-      assigneesLength ? getAssignee(task) : 'Unassigned',
+      assigneesLength ? getMainAssignee(task) : 'Unassigned',
     ]);
 
     let assigneeText;
