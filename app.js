@@ -14,12 +14,15 @@ const app = express();
 IN_PROD && app.use(enforce.HTTPS({ trustProtoHeader: true }));
 app.use(express.json());
 
+const forecast = axios.create({
+  baseURL: 'https://api.forecast.it/api',
+  headers: { 'X-FORECAST-API-KEY': FORECAST_API_KEY },
+});
+
 const getTask = async (id) => {
-  const response = await axios({
-    url: `https://api.forecast.it/api/v2/tasks/company_task_id/${id}`,
-    method: 'get',
-    headers: { 'X-FORECAST-API-KEY': FORECAST_API_KEY },
-  }).catch(console.error);
+  const response = await forecast
+    .get(`/v2/tasks/company_task_id/${id}`)
+    .catch(console.error);
 
   return response && response.data;
 };
@@ -30,11 +33,9 @@ const getWorkflowColumn = async ({
 }) => {
   const {
     data: { name },
-  } = await axios({
-    url: `https://api.forecast.it/api/v1/projects/${projectId}/workflow_columns/${workflowColumn}`,
-    method: 'get',
-    headers: { 'X-FORECAST-API-KEY': FORECAST_API_KEY },
-  }).catch(console.error);
+  } = await forecast
+    .get(`/v1/projects/${projectId}/workflow_columns/${workflowColumn}`)
+    .catch(console.error);
 
   return name || 'None';
 };
@@ -42,11 +43,7 @@ const getWorkflowColumn = async ({
 const getRole = async ({ role }) => {
   const {
     data: { name },
-  } = await axios({
-    url: `https://api.forecast.it/api/v1/roles/${role}`,
-    method: 'get',
-    headers: { 'X-FORECAST-API-KEY': FORECAST_API_KEY },
-  }).catch(console.error);
+  } = await forecast.get(`/v1/roles/${role}`).catch(console.error);
 
   return name;
 };
@@ -54,11 +51,9 @@ const getRole = async ({ role }) => {
 const getAssignee = async ({ assigned_persons: assignedPersons }) => {
   const {
     data: { first_name: firstName, last_name: lastName },
-  } = await axios({
-    url: `https://api.forecast.it/api/v1/persons/${assignedPersons[0]}`,
-    method: 'get',
-    headers: { 'X-FORECAST-API-KEY': FORECAST_API_KEY },
-  }).catch(console.error);
+  } = await forecast
+    .get(`/v1/persons/${assignedPersons[0]}`)
+    .catch(console.error);
 
   return `${firstName} ${lastName}`;
 };
