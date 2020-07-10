@@ -116,16 +116,19 @@ const createUnfurls = async ({ links }) => {
 };
 
 const unfurlMessage = ({ channel, message_ts: ts }, unfurls) =>
-  axios({
-    url: 'https://slack.com/api/chat.unfurl',
-    method: 'post',
-    headers: { Authorization: `Bearer ${OAUTH_TOKEN}` },
-    data: {
-      channel,
-      ts,
-      unfurls,
-    },
-  }).catch(console.error);
+  axios
+    .post(
+      'https://slack.com/api/chat.unfurl',
+      {
+        channel,
+        ts,
+        unfurls,
+      },
+      {
+        headers: { Authorization: `Bearer ${OAUTH_TOKEN}` },
+      }
+    )
+    .catch(console.error);
 
 app.post('/', async (req, res) => {
   const {
