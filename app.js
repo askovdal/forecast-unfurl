@@ -109,8 +109,8 @@ const createUnfurls = async ({ links }) => {
       assigneeText = `Assignee: *${assignee}*`;
     }
 
-    let statusText = `Status: *${status}*`;
-    let roleText = `Role: *${role}*`;
+    const statusText = `Status: *${status}*`;
+    const roleText = `Role: *${role}*`;
 
     const contextText = [statusText, assigneeText, roleText]
       .map((text) =>
