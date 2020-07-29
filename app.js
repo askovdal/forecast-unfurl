@@ -115,7 +115,7 @@ const createUnfurls = async ({ links }) => {
     const contextText = [statusText, assigneeText, roleText]
       .map((text) =>
         // Replace normal spaces with non-breaking spaces
-        text.split(' ').join(' ')
+        text.replace(/ /g, ' ')
       )
       .join('        ');
 
