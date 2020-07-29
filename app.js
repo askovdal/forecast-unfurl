@@ -112,7 +112,7 @@ const createUnfurls = async ({ links }) => {
     // Build context text and replace normal spaces with non-breaking spaces
     const contextText = `Status: *${status}*        ${assigneeText}        Role: *${role}*`
       .split(' ')
-      .join(' ');
+      .join(' ');
 
     unfurls[url] = {
       color: '#6e0fea',
