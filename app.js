@@ -102,7 +102,7 @@ const createUnfurls = async ({ links }) => {
 
     let assigneeText;
     if (assigneesLength === 2) {
-      assigneeText = `Assignees: *${assignee} + 1 otheeeeeer*`;
+      assigneeText = `Assignees: *${assignee} + 1 other*`;
     } else if (assigneesLength > 2) {
       assigneeText = `Assignees: *${assignee} + ${assigneesLength - 1} others*`;
     } else {
@@ -176,7 +176,6 @@ app.post('/', async (req, res) => {
   res.sendStatus(200);
 
   const unfurls = await createUnfurls(event);
-  console.log(event);
   unfurlMessage(event, unfurls);
 });
 
