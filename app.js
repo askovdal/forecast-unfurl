@@ -109,6 +109,11 @@ const createUnfurls = async ({ links }) => {
       assigneeText = `Assignee: *${assignee}*`;
     }
 
+    // Build context text and replace normal spaces with non-breaking spaces
+    const contextText = `Status: *${status}*\\t\\t${assigneeText}\\t\\tRole: *${role}*`
+      .split(' ')
+      .join(' ');
+
     unfurls[url] = {
       color: '#6e0fea',
       blocks: [
@@ -124,7 +129,7 @@ const createUnfurls = async ({ links }) => {
           elements: [
             {
               type: 'mrkdwn',
-              text: `Status: *${status}*\t\t${assigneeText}\t\tRole: *${role}*`,
+              text: contextText,
             },
           ],
         },
