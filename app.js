@@ -176,6 +176,7 @@ app.post('/', async (req, res) => {
   res.sendStatus(200);
 
   const unfurls = await createUnfurls(event);
+  console.log(event);
   unfurlMessage(event, unfurls);
 });
 
