@@ -112,7 +112,7 @@ const createUnfurls = async ({ links }) => {
     let statusText = `Status: *${status}*`;
     let roleText = `Role: *${role}*`;
 
-    const contextText = [assigneeText, statusText, roleText]
+    const contextText = [statusText, assigneeText, roleText]
       .map((text) =>
         // Replace normal spaces with non-breaking spaces
         text.split(' ').join(' ')
