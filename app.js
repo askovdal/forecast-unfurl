@@ -129,7 +129,7 @@ const createUnfurls = async ({ links }) => {
           elements: [
             {
               type: 'mrkdwn',
-              text: contextText,
+              text: `Status: *${status}*\\t\\t${assigneeText}\\t\\tRole: *${role}*`,
             },
           ],
         },
