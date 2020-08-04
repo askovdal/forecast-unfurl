@@ -37,7 +37,7 @@ const getWorkflowColumn = async ({
     .get(`/v1/projects/${projectId}/workflow_columns/${workflowColumn}`)
     .catch(console.error);
 
-  return name || 'None';
+  return name.trim() || 'None';
 };
 
 const getRole = async ({ role }) => {
@@ -45,7 +45,7 @@ const getRole = async ({ role }) => {
     data: { name },
   } = await forecast.get(`/v1/roles/${role}`).catch(console.error);
 
-  return name;
+  return name.trim();
 };
 
 const getMainAssignee = async ({ assigned_persons: assignedPersons, role }) => {
