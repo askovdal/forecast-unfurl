@@ -68,43 +68,42 @@ const getMainAssignee = async ({ assigned_persons: assignedPersons, role }) => {
   return `${firstName} ${lastName}`;
 };
 
-const createUnfurls = async ({ links }) => {
-  const unfurls = {};
-  for (const { url } of links) {
-    const id = url.match(/\/T(\d+)$/);
-    if (!id) continue;
+const createUnfurl = async ({ url }) => {
+  const id = url.match(/\/T(\d+)$/);
+  if (!id) return;
 
-    const task = await getTask(id[1]);
-    if (!task) continue;
+  const task = await getTask(id[1]);
+  if (!task) return;
+  const assigneesLength = task.assigned_persons.length;
 
-    const assigneesLength = task.assigned_persons.length;
+  const [status, role, assignee] = await Promise.all([
+    getWorkflowColumn(task),
+    task.role ? getRole(task) : 'None',
+    assigneesLength ? getMainAssignee(task) : 'Unassigned',
+  ]);
 
-    const [status, role, assignee] = await Promise.all([
-      getWorkflowColumn(task),
-      task.role ? getRole(task) : 'None',
-      assigneesLength ? getMainAssignee(task) : 'Unassigned',
-    ]);
+  let assigneeText;
+  if (assigneesLength === 2) {
+    assigneeText = `Assignees: *${assignee} + 1 other*`;
+  } else if (assigneesLength > 2) {
+    assigneeText = `Assignees: *${assignee} + ${assigneesLength - 1} others*`;
+  } else {
+    assigneeText = `Assignee: *${assignee}*`;
+  }
 
-    let assigneeText;
-    if (assigneesLength === 2) {
-      assigneeText = `Assignees: *${assignee} + 1 other*`;
-    } else if (assigneesLength > 2) {
-      assigneeText = `Assignees: *${assignee} + ${assigneesLength - 1} others*`;
-    } else {
-      assigneeText = `Assignee: *${assignee}*`;
-    }
+  const statusText = `Status: *${status}*`;
+  const roleText = `Role: *${role}*`;
 
-    const statusText = `Status: *${status}*`;
-    const roleText = `Role: *${role}*`;
+  const contextText = [statusText, assigneeText, roleText]
+    .map((text) =>
+      // Replace normal spaces with non-breaking spaces
+      text.replace(/ /g, ' ')
+    )
+    .join('        ');
 
-    const contextText = [statusText, assigneeText, roleText]
-      .map((text) =>
-        // Replace normal spaces with non-breaking spaces
-        text.replace(/ /g, ' ')
-      )
-      .join('        ');
-
-    unfurls[url] = {
+  return [
+    url,
+    {
       color: '#6e0fea',
       blocks: [
         {
@@ -124,10 +123,17 @@ const createUnfurls = async ({ links }) => {
           ],
         },
       ],
-    };
-  }
+    },
+  ];
+};
 
-  return unfurls;
+const createUnfurls = async ({ links }) => {
+  // Get all unfurls as arrays of [taskUrl, unfurl]
+  const unfurls = await Promise.all(links.map(createUnfurl));
+
+  // Filter out the undefined values (invalid tasks) and turn the array of
+  // arrays into key-value pairs of {taskUrl: unfurl}
+  return Object.fromEntries(unfurls.filter(Boolean));
 };
 
 const unfurlMessage = ({ channel, message_ts: ts }, unfurls) =>
