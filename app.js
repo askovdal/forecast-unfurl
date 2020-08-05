@@ -49,36 +49,21 @@ const getRole = async ({ role }) => {
 };
 
 const getMainAssignee = async ({ assigned_persons: assignedPersons, role }) => {
-  const people = await Promise.all(
+  // Retrieve information of all assigned persons.
+  const responses = await Promise.all(
     assignedPersons.map((assignedPerson) =>
       forecast.get(`/v1/persons/${assignedPerson}`).catch(console.error)
     )
   );
+  const people = responses.map(({ data }) => data);
 
-  let firstName, lastName, defaultRole;
-  if (people.length === 1 || role === null) {
-    // If there is only one assignee or no role on the task, just use the first
-    // assignee's name.
-    ({
-      data: { first_name: firstName, last_name: lastName },
-    } = people[0]);
-  } else {
-    // If there are more than one assignee, go through each one, and if their
-    // default role is the same as the role on the task then use that assignee's
-    // name. If none of the default roles match then use the last assignee's
-    // name.
-    for ({
-      data: {
-        default_role: defaultRole,
-        first_name: firstName,
-        last_name: lastName,
-      },
-    } of people) {
-      if (defaultRole === role) {
-        break;
-      }
-    }
-  }
+  // Get the first and last name of the first assignee whose default role is the
+  // same as the role on the task. If there are none, get the first who isn't a
+  // client. If there are none, get the first assignee.
+  const { first_name: firstName, last_name: lastName } =
+    people.find(({ default_role: defaultRole }) => defaultRole === role) ||
+    people.find(({ user_type: userType }) => userType !== 'CLIENT') ||
+    people[0];
 
   return `${firstName} ${lastName}`;
 };
