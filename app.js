@@ -69,7 +69,7 @@ const getMainAssignee = async ({ assigned_persons: assignedPersons, role }) => {
 };
 
 const createUnfurl = async ({ url }) => {
-  const id = url.match(/\/T(\d+)$/);
+  const id = url.match(/\/T(\d+)($|#.+)/);
   if (!id) return;
 
   const task = await getTask(id[1]);
