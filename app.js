@@ -19,6 +19,14 @@ const forecast = axios.create({
   headers: { 'X-FORECAST-API-KEY': FORECAST_API_KEY },
 });
 
+const escapeText = (text) =>
+  text
+    .trim()
+    .replace('&', '&amp;')
+    .replace('<', '&lt;')
+    .replace('>', '&gt;')
+    .replace('*', '⁕');
+
 const getTask = async (id) => {
   const response = await forecast
     .get(`/v2/tasks/company_task_id/${id}`)
@@ -37,7 +45,7 @@ const getWorkflowColumn = async ({
     .get(`/v1/projects/${projectId}/workflow_columns/${workflowColumn}`)
     .catch(console.error);
 
-  return name.trim() || 'None';
+  return escapeText(name) || 'None';
 };
 
 const getRole = async ({ role }) => {
@@ -45,7 +53,7 @@ const getRole = async ({ role }) => {
     data: { name },
   } = await forecast.get(`/v1/roles/${role}`).catch(console.error);
 
-  return name.trim();
+  return escapeText(name);
 };
 
 const getMainAssignee = async ({ assigned_persons: assignedPersons, role }) => {
@@ -65,7 +73,7 @@ const getMainAssignee = async ({ assigned_persons: assignedPersons, role }) => {
     people.find(({ user_type: userType }) => userType !== 'CLIENT') ||
     people[0];
 
-  return `${firstName} ${lastName}`;
+  return escapeText(`${firstName} ${lastName}`);
 };
 
 const createUnfurl = async ({ url }) => {
@@ -97,7 +105,7 @@ const createUnfurl = async ({ url }) => {
   const contextText = [statusText, assigneeText, roleText]
     .map((text) =>
       // Replace normal spaces with non-breaking spaces
-      text.replace(/ /g, ' ')
+      text.replace(' ', ' ')
     )
     .join('        ');
 
@@ -110,7 +118,7 @@ const createUnfurl = async ({ url }) => {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `<${url}|T${id[1]} *${task.title}*>`,
+            text: `<${url}|T${id[1]} *${escapeText(task.title)}*>`,
           },
         },
         {
