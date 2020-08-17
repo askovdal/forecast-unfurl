@@ -22,10 +22,10 @@ const forecast = axios.create({
 const escapeText = (text) =>
   text
     .trim()
-    .replace('&', '&amp;')
-    .replace('<', '&lt;')
-    .replace('>', '&gt;')
-    .replace('*', '⁕');
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\*/g, '⁕');
 
 const getTask = async (id) => {
   const response = await forecast
@@ -105,7 +105,7 @@ const createUnfurl = async ({ url }) => {
   const contextText = [statusText, assigneeText, roleText]
     .map((text) =>
       // Replace normal spaces with non-breaking spaces
-      text.replace(' ', ' ')
+      text.replace(/ /g, ' ')
     )
     .join('        ');
 
