@@ -45,7 +45,7 @@ const getWorkflowColumn = async ({
     .get(`/v1/projects/${projectId}/workflow_columns/${workflowColumn}`)
     .catch(console.error);
 
-  return escapeText(name) || 'None';
+  return name ? escapeText(name) : 'None';
 };
 
 const getRole = async ({ role }) => {
