@@ -77,10 +77,11 @@ const getMainAssignee = async ({ assigned_persons: assignedPersons, role }) => {
 };
 
 const createUnfurl = async ({ url }) => {
-  const id = url.match(/\/T(\d+)($|#.+)/);
-  if (!id) return;
+  const taskIdMatch = url.match(/\/T(\d+)(?:$|#)/);
+  if (!taskIdMatch) return;
 
-  const task = await getTask(id[1]);
+  const taskId = taskIdMatch[1];
+  const task = await getTask(taskId);
   if (!task) return;
   const assigneesLength = task.assigned_persons.length;
 
@@ -118,7 +119,7 @@ const createUnfurl = async ({ url }) => {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `<${url}|T${id[1]} *${escapeText(task.title)}*>`,
+            text: `<${url}|T${taskId} *${escapeText(task.title)}*>`,
           },
         },
         {
