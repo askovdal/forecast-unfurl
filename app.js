@@ -1,7 +1,7 @@
 import axios from 'axios';
 import camelize from 'camelize';
-import enforce from 'express-sslify';
 import express from 'express';
+import enforce from 'express-sslify';
 
 import {
   FORECAST_API_KEY,
