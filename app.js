@@ -117,7 +117,7 @@ const createUnfurl = async ({ url }) => {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `<${url}|T${taskId} *${escapeText(task.title)}*>`,
+            text: `<${url}|T${taskId} *${escapeText(task.title)} *>`,
           },
         },
         {
