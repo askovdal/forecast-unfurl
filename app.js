@@ -26,7 +26,7 @@ const escapeText = (text) =>
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/\*/g, '⁕');
+    .replace(/\*/g, '✱');
 
 const getTask = async (id) => {
   const response = await forecast
