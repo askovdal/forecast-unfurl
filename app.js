@@ -7,6 +7,8 @@ import {
   FORECAST_API_KEY,
   IN_PROD,
   PORT,
+  SLACK_CLIENT_ID,
+  SLACK_CLIENT_SECRET,
   SLACK_OAUTH_TOKEN,
   VERIFICATION_TOKEN,
 } from './config.js';
@@ -147,14 +149,8 @@ const unfurlMessage = ({ channel, message_ts: ts }, unfurls) =>
   axios
     .post(
       'https://slack.com/api/chat.unfurl',
-      {
-        channel,
-        ts,
-        unfurls,
-      },
-      {
-        headers: { Authorization: `Bearer ${SLACK_OAUTH_TOKEN}` },
-      }
+      { channel, ts, unfurls },
+      { headers: { Authorization: `Bearer ${SLACK_OAUTH_TOKEN}` } }
     )
     .catch(console.error);
 
@@ -175,6 +171,28 @@ app.post('/', async (req, res) => {
 
   const unfurls = await createUnfurls(event);
   unfurlMessage(event, unfurls);
+});
+
+app.get('/authorize', async (req, res) => {
+  const { code } = req.query;
+
+  const { data } = await axios.post(
+    'https://slack.com/api/oauth.v2.access',
+    new URLSearchParams({ code }),
+    {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      auth: {
+        username: SLACK_CLIENT_ID,
+        password: SLACK_CLIENT_SECRET,
+      },
+    }
+  );
+
+  if (data.ok) {
+    res.send({ message: 'Authorization successful' });
+  } else {
+    res.status(400).send({ message: 'Authorization unsuccessful' });
+  }
 });
 
 app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
