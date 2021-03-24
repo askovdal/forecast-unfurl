@@ -1,9 +1,9 @@
 export const {
   FORECAST_API_KEY,
-  NODE_ENV = 'development',
+  NODE_ENV,
   OAUTH_TOKEN,
-  PORT = 3001,
-  VERIFICATION_TOKEN = 'testToken',
+  PORT,
+  VERIFICATION_TOKEN,
 } = process.env;
 
 export const IN_PROD = NODE_ENV === 'production';
