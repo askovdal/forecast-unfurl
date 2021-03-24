@@ -1,7 +1,7 @@
 export const {
   FORECAST_API_KEY,
   NODE_ENV,
-  OAUTH_TOKEN,
+  SLACK_OAUTH_TOKEN,
   PORT,
   VERIFICATION_TOKEN,
 } = process.env;

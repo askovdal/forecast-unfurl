@@ -6,8 +6,8 @@ import enforce from 'express-sslify';
 import {
   FORECAST_API_KEY,
   IN_PROD,
-  OAUTH_TOKEN,
   PORT,
+  SLACK_OAUTH_TOKEN,
   VERIFICATION_TOKEN,
 } from './config.js';
 
@@ -153,7 +153,7 @@ const unfurlMessage = ({ channel, message_ts: ts }, unfurls) =>
         unfurls,
       },
       {
-        headers: { Authorization: `Bearer ${OAUTH_TOKEN}` },
+        headers: { Authorization: `Bearer ${SLACK_OAUTH_TOKEN}` },
       }
     )
     .catch(console.error);
